@@ -113,6 +113,7 @@ def set_a_piece(game_plane, players, player_id, n=SIZE, empty=EMPTY, row=None):
             print('Invalid operation!')
             print('A valid row must be between 1 and', n, '. Try again\n')
             return set_a_piece(game_plane, players, player_id, n=n, empty=empty)
+
     col = input('Col: ').strip()
     if col == '' or not col.isnumeric():
         print("Invalid operation")

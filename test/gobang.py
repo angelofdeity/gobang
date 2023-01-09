@@ -113,7 +113,6 @@ def set_a_piece(game_plane, players, player_id, n=SIZE, empty=EMPTY, row=None):
             print('Invalid operation!')
             print('A valid row must be between 1 and', n, '. Try again\n')
             return set_a_piece(game_plane, players, player_id, n=n, empty=empty)
-
     col = input('Col: ').strip()
     if col == '' or not col.isnumeric():
         print("Invalid operation")
@@ -139,9 +138,9 @@ def check_winning(game_plane, player_id, pos=[1, 1], n=SIZE):
     i = pos[0] - 1
     j = pos[1] - 1
 
-    if check_horizontal_win(game_plane, player_id, i, j, n):
+    if check_h(game_plane, player_id, i, j, n):
         return True
-    elif check_vertical_win(game_plane, player_id, i, j, n):
+    elif check_v(game_plane, player_id, i, j, n):
         return True
     elif check_135_degree(game_plane, player_id, i, j, n):
         return True
@@ -149,48 +148,64 @@ def check_winning(game_plane, player_id, pos=[1, 1], n=SIZE):
         return check_45_degree(game_plane, player_id, i, j, n)
 
 
-def check_horizontal_win(states, player, i, j, n=SIZE, min_count=WIN_MIN_COUNT):
+def check_h(states, player, i, j, n=SIZE):
     """
     Check horizontal winning pattern
     """
-    win_positions = [(i, j)]
-    for pos in range(j - 1, -1, -1):  # check cells to the left
-        if states[i][pos] != player:
+
+    win_pos = []
+    win_pos.append((i, j))
+
+    counter = 1
+    pos = j - 1
+    while pos >= 0:
+        if states[i][pos] == player:
+            counter += 1
+            win_pos.append((i, pos))
+            pos -= 1
+        else:
             break
-        win_positions.append((i, pos))
-    for pos in range(j + 1, n):  # check cells to the right
-        if states[i][pos] != player:
+    pos = j + 1
+    while pos < n:
+        if states[i][pos] == player:
+            counter += 1
+            win_pos.append((i, pos))
+            pos += 1
+        else:
             break
-        win_positions.append((i, pos))
-    if len(win_positions) >= min_count:
-        for win_i, win_j in win_positions:
+    if counter >= WIN_MIN_COUNT:
+        for win_i, win_j in win_pos:
             states[win_i][win_j] = player + OFFSET
         return True
     return False
 
 
-def check_vertical_win(states, player, i, j, n=SIZE):
+def check_v(states, player, i, j, n=SIZE):
     """
     Check vertical winning pattern
     """
 
-    win_pos = [(i, j)]
+    win_pos = []
+    win_pos.append((i, j))
+
     counter = 1
+    pos = i - 1
 
-    for pos in range(i-1, -1, -1):  # check cells above
+    while pos >= 0:
         if states[pos][j] == player:
             counter += 1
             win_pos.append((pos, j))
+            pos -= 1
         else:
             break
-
-    for pos in range(i+1, n):  # check cells below
+    pos = i + 1
+    while pos < n:
         if states[pos][j] == player:
             counter += 1
             win_pos.append((pos, j))
+            pos += 1
         else:
             break
-
     if counter >= WIN_MIN_COUNT:
         for win_i, win_j in win_pos:
             states[win_i][win_j] = player + OFFSET
