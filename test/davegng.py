@@ -261,33 +261,25 @@ def check_135_degree(states, player, i, j, n=SIZE):
     """
     Check 135 degree winning pattern
     """
-    win_pos = []
-    win_pos.append((i, j))
-
+    win_pos = [(i, j)]
     counter = 1
-    pos_r = i - 1
-    pos_c = j - 1
 
-    while pos_r >= 0 and pos_c >= 0:
-        if states[pos_r][pos_c] == player:
+    # Check top-left to bottom-right diagonal
+    r, c = i - 1, j - 1
+    while r >= 0 and c >= 0:
+        if states[r][c] == player:
+            win_pos.append((r, c))
             counter += 1
-            win_pos.append((pos_r, pos_c))
-            pos_r -= 1
-            pos_c -= 1
-        else:
-            break
-
-    pos_r = i + 1
-    pos_c = j + 1
-
-    while pos_r < n and pos_c < n:
-        if states[pos_r][pos_c] == player:
+        r -= 1
+        c -= 1
+    r, c = i + 1, j + 1
+    while r < n and c < n:
+        if states[r][c] == player:
+            win_pos.append((r, c))
             counter += 1
-            win_pos.append((pos_r, pos_c))
-            pos_r += 1
-            pos_c += 1
-        else:
-            break
+        r += 1
+        c += 1
+
     if counter >= WIN_MIN_COUNT:
         for win_i, win_j in win_pos:
             states[win_i][win_j] = player + OFFSET
@@ -300,33 +292,25 @@ def check_45_degree(states, player, i, j, n=SIZE):
     """
     Check 45 degree winning pattern
     """
-    win_pos = []
-    win_pos.append((i, j))
-
+    win_pos = [(i, j)]
     counter = 1
-    pos_r = i - 1
-    pos_c = j + 1
 
-    while pos_r >= 0 and pos_c < n:
-        if states[pos_r][pos_c] == player:
+    # Check top-right to bottom-left diagonal
+    r, c = i - 1, j + 1
+    while r >= 0 and c < n:
+        if states[r][c] == player:
+            win_pos.append((r, c))
             counter += 1
-            win_pos.append((pos_r, pos_c))
-            pos_r -= 1
-            pos_c += 1
-        else:
-            break
-
-    pos_r = i + 1
-    pos_c = j - 1
-
-    while pos_r < n and pos_c >= 0:
-        if states[pos_r][pos_c] == player:
+        r -= 1
+        c += 1
+    r, c = i + 1, j - 1
+    while r < n and c >= 0:
+        if states[r][c] == player:
+            win_pos.append((r, c))
             counter += 1
-            win_pos.append((pos_r, pos_c))
-            pos_r += 1
-            pos_c -= 1
-        else:
-            break
+        r += 1
+        c -= 1
+
     if counter >= WIN_MIN_COUNT:
         for win_i, win_j in win_pos:
             states[win_i][win_j] = player + OFFSET

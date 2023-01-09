@@ -113,6 +113,7 @@ def set_a_piece(game_plane, players, player_id, n=SIZE, empty=EMPTY, row=None):
             print('Invalid operation!')
             print('A valid row must be between 1 and', n, '. Try again\n')
             return set_a_piece(game_plane, players, player_id, n=n, empty=empty)
+
     col = input('Col: ').strip()
     if col == '' or not col.isnumeric():
         print("Invalid operation")
@@ -162,7 +163,7 @@ def check_h(states, player, i, j, n=SIZE):
         if states[i][pos] == player:
             counter += 1
             win_pos.append((i, pos))
-            pos -= 1
+            pos += 1
         else:
             break
     pos = j + 1
@@ -250,45 +251,33 @@ def check_135_degree(states, player, i, j, n=SIZE):
 
 
 def check_45_degree(states, player, i, j, n=SIZE):
-    """
-    Check for a winning pattern of `player` along the 45 degree diagonal
-    starting at cell (i, j) in the `states` grid.
-    A winning pattern consists of at least `WIN_MIN_COUNT` consecutive
-    matching cells.
+    win_pos = []
+    win_pos.append((i, j))
 
-    If a winning pattern is found, the matching cells are updated to
-    `player + OFFSET` in the `states` grid and the function returns True.
-    Otherwise, the function returns False.
-
-    Parameters:
-    states (list): 2D list of integers representing the game grid.
-    player (int): Integer representing the current player.
-    i (int): Row index of the starting cell.
-    j (int): Column index of the starting cell.
-    n (int): Size of the grid. Default is `SIZE`.
-
-    Returns:
-    bool: True if a winning pattern is found, False otherwise.
-    """
-    win_pos = [(i, j)]
     counter = 1
+    pos_r = i - 1
+    pos_c = j + 1
 
-    # Check top-right to bottom-left diagonal
-    r, c = i - 1, j + 1
-    while r >= 0 and c < n:
-        if states[r][c] == player:
-            win_pos.append((r, c))
+    while pos_r >= 0 and pos_c < n:
+        if states[pos_r][pos_c] == player:
             counter += 1
-        r -= 1
-        c += 1
-    r, c = i + 1, j - 1
-    while r < n and c >= 0:
-        if states[r][c] == player:
-            win_pos.append((r, c))
-            counter += 1
-        r += 1
-        c -= 1
+            win_pos.append((pos_r, pos_c))
+            pos_r -= 1
+            pos_c += 1
+        else:
+            break
 
+    pos_r = i + 1
+    pos_c = j - 1
+
+    while pos_r < n and pos_c >= 0:
+        if states[pos_r][pos_c] == player:
+            counter += 1
+            win_pos.append((pos_r, pos_c))
+            pos_r += 1
+            pos_c -= 1
+        else:
+            break
     if counter >= WIN_MIN_COUNT:
         for win_i, win_j in win_pos:
             states[win_i][win_j] = player + OFFSET
